@@ -92,6 +92,3 @@ InterviewGuard AI Simulator is a technical interview practice platform. It simul
 
 ---
 
-## License
-
-MIT
