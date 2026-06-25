@@ -12,9 +12,7 @@ import ScoreCircle from '../components/ScoreCircle';
 export default function ReportPage() {
   const { sessionId } = useParams();
   const [report, setReport] = useState(null);
-  const [roadmap, setRoadmap] = useState(null);
   const [isLoadingReport, setIsLoadingReport] = useState(true);
-  const [isLoadingRoadmap, setIsLoadingRoadmap] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
 
   // Fetch report
@@ -32,19 +30,6 @@ export default function ReportPage() {
 
     fetchReport();
   }, [sessionId]);
-
-  // Generate roadmap
-  const handleGenerateRoadmap = async () => {
-    setIsLoadingRoadmap(true);
-    try {
-      const response = await reportAPI.generateRoadmap(sessionId);
-      setRoadmap(response.data);
-    } catch (err) {
-      console.error('Failed to generate roadmap:', err);
-    } finally {
-      setIsLoadingRoadmap(false);
-    }
-  };
 
   if (isLoadingReport) {
     return (
@@ -153,14 +138,12 @@ export default function ReportPage() {
         <div className="flex border-b border-stone-200 gap-1.5 pb-px">
           {[
             { id: 'overview', label: 'Question Breakdown' },
-            { id: 'proctoring', label: 'Proctoring Logs' },
-            { id: 'roadmap', label: 'Study Roadmap' }
+            { id: 'proctoring', label: 'Proctoring Logs' }
           ].map((tab) => (
             <button
               key={tab.id}
               onClick={() => {
                 setActiveTab(tab.id);
-                if (tab.id === 'roadmap' && !roadmap) handleGenerateRoadmap();
               }}
               id={`tab-${tab.id}`}
               className={`px-4 py-2.5 font-semibold text-sm transition-all border-b-2 cursor-pointer ${
@@ -291,87 +274,6 @@ export default function ReportPage() {
             </motion.div>
           )}
 
-          {/* AI Roadmap Tab */}
-          {activeTab === 'roadmap' && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
-              {isLoadingRoadmap ? (
-                <div className="bg-white border border-stone-200 p-12 rounded-2xl text-center flex flex-col items-center">
-                  <div className="w-8 h-8 border-3 border-indigo-600 border-t-transparent rounded-full animate-spin mb-4" />
-                  <p className="text-stone-600 font-medium">AI is generating a customized 3-topic study guide based on your scores...</p>
-                </div>
-              ) : roadmap ? (
-                <div className="space-y-6">
-                  {/* Summary Header */}
-                  <div className="bg-indigo-50/50 border border-indigo-100 p-6 rounded-2xl shadow-sm">
-                    <h3 className="font-bold text-stone-900 text-lg">{roadmap.title || 'Personalized Study Plan'}</h3>
-                    <p className="text-sm text-stone-600 mt-2 leading-relaxed">{roadmap.summary}</p>
-                  </div>
-
-                  {/* Topics List */}
-                  <div className="space-y-4">
-                    {roadmap.topics?.map((topic, idx) => (
-                      <motion.div
-                        key={idx}
-                        initial={{ opacity: 0, x: -10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: idx * 0.1 }}
-                        className="bg-white border border-stone-200 p-6 rounded-2xl shadow-sm flex items-start gap-4"
-                      >
-                        <div className="w-8 h-8 rounded-full bg-stone-100 border border-stone-250 flex items-center justify-center text-sm font-bold text-stone-700 select-none mt-0.5">
-                          {idx + 1}
-                        </div>
-                        <div className="flex-1 space-y-2">
-                          <div className="flex flex-wrap items-center gap-2">
-                            <h4 className="font-bold text-stone-900 text-sm sm:text-base">{topic.name}</h4>
-                            <span className={`px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider border ${
-                              topic.priority === 'high' 
-                                ? 'bg-rose-50 text-rose-700 border-rose-100'
-                                : topic.priority === 'medium'
-                                  ? 'bg-amber-50 text-amber-700 border-amber-100'
-                                  : 'bg-emerald-50 text-emerald-700 border-emerald-100'
-                            }`}>
-                              {topic.priority} Priority
-                            </span>
-                            {topic.estimated_hours && (
-                              <span className="px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider bg-indigo-50 text-indigo-700 border border-indigo-100">
-                                ~{topic.estimated_hours} Hours
-                              </span>
-                            )}
-                          </div>
-                          
-                          <p className="text-sm text-stone-600 leading-relaxed">{topic.description}</p>
-                          
-                          {topic.resources?.length > 0 && (
-                            <div className="pt-2">
-                              <span className="text-[10px] font-bold text-stone-400 uppercase tracking-wider block mb-1">
-                                Recommended Study Materials
-                              </span>
-                              <ul className="text-xs text-indigo-600 hover:text-indigo-700 font-medium space-y-0.5 pl-4 list-disc">
-                                {topic.resources.map((res, ridx) => <li key={ridx}>{res}</li>)}
-                              </ul>
-                            </div>
-                          )}
-                        </div>
-                      </motion.div>
-                    ))}
-                  </div>
-                </div>
-              ) : (
-                <div className="bg-white border border-stone-200 p-10 rounded-2xl text-center flex flex-col items-center">
-                  <h4 className="font-bold text-stone-900">Customized Study Roadmap</h4>
-                  <p className="text-xs text-stone-500 mt-1 max-w-sm">
-                    Generate a personalized 3-topic study roadmap with estimated schedules and free reference resources.
-                  </p>
-                  <button
-                    onClick={handleGenerateRoadmap}
-                    className="mt-6 px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold text-sm transition-colors cursor-pointer shadow-sm"
-                  >
-                    Generate with Gemini AI
-                  </button>
-                </div>
-              )}
-            </motion.div>
-          )}
         </div>
 
         {/* Action Controls */}

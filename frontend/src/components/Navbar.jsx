@@ -18,7 +18,7 @@ export default function Navbar() {
     >
       <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2 text-lg font-bold text-stone-900 hover:text-stone-700 transition-colors">
-          <span className="w-8 h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center text-sm">P</span>
+          <span className="w-8 h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center text-sm font-bold tracking-tight">IG</span>
           InterviewGuard AI Simulator
         </Link>
 

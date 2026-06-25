@@ -526,19 +526,6 @@ export default function InterviewRoom() {
               </div>
             </div>
 
-            {/* Alerts Log timeline */}
-            <div className="bg-stone-50/50 p-2.5 rounded-xl border border-stone-150 h-[58px] overflow-y-auto space-y-1 text-[10px]">
-              {interview.violations.length === 0 ? (
-                <span className="text-stone-400 italic">No warnings recorded.</span>
-              ) : (
-                interview.violations.slice(-2).map((violation, idx) => (
-                  <div key={idx} className="flex gap-1.5 text-stone-650 leading-snug">
-                    <span className="text-rose-600 font-bold select-none">!</span>
-                    <span>{violation.message}</span>
-                  </div>
-                ))
-              )}
-            </div>
 
             {/* Progress tracker */}
             <div className="pt-1 flex items-center justify-between text-[10px] text-stone-500">
