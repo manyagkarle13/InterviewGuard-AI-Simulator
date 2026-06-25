@@ -12,7 +12,6 @@ InterviewGuard AI Simulator is a technical interview practice platform. It simul
 * **Role-Aware Adaptive Questions** — Gemini 2.0 Flash dynamically generates technical questions tailored to the candidate's target role, experience level, and core technologies.
 * **Client-Side Computer Vision** — Real-time face presence validation and horizontal/vertical gaze tracking using MediaPipe Face Mesh and TensorFlow.js.
 * **Instant Evaluation** — AI scores responses immediately, generating detailed feedback alongside actionable lists of strengths and improvements.
-* **Personalized Roadmaps** — Generates a customized 3-topic study roadmap based on identified weak areas, complete with time estimates and resources.
 * **Local Privacy** — All webcam image and landmark processing runs 100% locally in the candidate's browser tab. No video data is uploaded to external servers.
 
 ---
@@ -88,7 +87,6 @@ InterviewGuard AI Simulator is a technical interview practice platform. It simul
 | POST | `/api/sessions/<session_id>/questions/<question_id>/evaluate/` | Evaluate a response transcript |
 | POST | `/api/sessions/<session_id>/proctoring-log/` | Log a proctoring violation warning |
 | GET | `/api/sessions/<session_id>/report/` | Get the final session evaluation report |
-| POST | `/api/sessions/<session_id>/roadmap/` | Generate the personalized study roadmap |
 
 ---
 
