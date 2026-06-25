@@ -33,7 +33,6 @@ export const proctoringAPI = {
 
 export const reportAPI = {
   get: (sessionId) => api.get(`/sessions/${sessionId}/report/`),
-  generateRoadmap: (sessionId) => api.post(`/sessions/${sessionId}/roadmap/`),
 };
 
 export default api;

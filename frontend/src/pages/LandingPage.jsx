@@ -51,7 +51,7 @@ export default function LandingPage() {
           className="text-base sm:text-lg md:text-xl text-stone-600 mt-6 max-w-2xl leading-relaxed"
         >
           A voice-first AI interview simulator with real-time computer vision proctoring.
-          Practice speaking answers, receive instant scores & strengths, and generate customized roadmaps.
+          Practice speaking answers and receive instant scores & strengths.
         </motion.p>
 
         <motion.div
@@ -112,10 +112,7 @@ export default function LandingPage() {
                 title: 'Immediate AI Feedback',
                 desc: 'Instantly get scoring, specific strengths list, and actionable recommendations right after each question.',
               },
-              {
-                title: 'Study Roadmap Generator',
-                desc: 'Generates a personalized, step-by-step 3-topic study guide focused on your weaknesses.',
-              },
+
               {
                 title: '100% Client-Side Privacy',
                 desc: 'Computer vision face tracking runs inside your local browser tab. No camera video is ever uploaded.',
