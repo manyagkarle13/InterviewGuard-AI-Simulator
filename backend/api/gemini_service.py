@@ -9,11 +9,12 @@ import google.generativeai as genai
 
 logger = logging.getLogger(__name__)
 
-genai.configure(api_key=settings.GEMINI_API_KEY)
+api_key = settings.GEMINI_API_KEY
+genai.configure(api_key=api_key)
 
 
 def _get_model():
-    return genai.GenerativeModel('gemini-2.0-flash')
+    return genai.GenerativeModel('gemini-2.0-flash-lite')
 
 
 def generate_question(role, experience, tech_stack, previous_questions=None, question_number=1, total_questions=5):
@@ -63,9 +64,11 @@ Respond ONLY in this JSON format (no markdown, no code blocks, no explanation):
             'category': result.get('category', 'General'),
         }
     except Exception as e:
-        logger.error(f"Gemini question generation error: {e}")
+        logger.error(f"Gemini question generation error: {type(e).__name__}: {e}")
+        role_hint = role or 'software development'
+        tech_hint = tech_stack[0] if tech_stack else role_hint
         return {
-            'text': f'Tell me about your experience with {tech_stack[0] if tech_stack else "software development"} and how you have applied it in your projects.',
+            'text': f'Tell me about your experience with {tech_hint} and how you have applied it in your projects.',
             'difficulty': 'medium',
             'category': 'General',
         }
