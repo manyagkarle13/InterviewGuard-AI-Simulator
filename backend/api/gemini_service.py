@@ -24,26 +24,27 @@ def generate_question(role, experience, tech_stack, previous_questions=None, que
         previous_q_text = "\n".join([f"- {q}" for q in previous_questions])
         previous_q_text = f"\n\nPreviously asked questions (DO NOT repeat these):\n{previous_q_text}"
 
-    prompt = f"""You are an expert technical interviewer. Generate ONE interview question for the following candidate:
+    prompt = f"""You are an expert technical interviewer conducting a mock interview.
 
-Role: {role}
-Experience Level: {experience}
-Tech Stack: {', '.join(tech_stack) if tech_stack else 'General'}
-Question Number: {question_number} of {total_questions}
+Candidate Profile:
+- Target Role: {role}
+- Experience Level: {experience}
+- Core Technologies / Skills: {', '.join(tech_stack) if tech_stack else 'General'}
+- Question: {question_number} of {total_questions}
 {previous_q_text}
 
-Rules:
-1. Match the question difficulty to the experience level.
-2. Junior → fundamentals and basic concepts.
-3. Mid-level → practical application, problem-solving, debugging scenarios.
-4. Senior → architecture, design patterns, trade-offs, scalability.
-5. Lead → system design, team decisions, strategic technical choices.
-6. Gradually increase difficulty as question number increases.
-7. Cover different areas from the tech stack across questions.
-8. Make the question conversational — it will be spoken aloud in a voice interview.
-9. Keep the question focused and clear — one concept per question.
+Your goal is to generate ONE question that is DEEPLY relevant to BOTH the target role AND the candidate's skills.
 
-Respond ONLY in this JSON format (no markdown, no code blocks, no explanation):
+Guidelines:
+1. The question MUST relate to the "{role}" role — think about what this role actually does day-to-day.
+2. Tie the question to one of the listed core technologies/skills where natural.
+3. Match difficulty to experience: Junior → concepts, Mid → application, Senior → trade-offs/scale, Lead → strategy/architecture.
+4. For odd-numbered questions, focus more on role responsibilities. For even-numbered questions, focus more on a specific skill.
+5. Gradually increase difficulty as question number increases.
+6. Make it conversational — the question will be spoken aloud in a real voice interview.
+7. Ask only ONE focused question — not multi-part.
+
+Respond ONLY in this exact JSON format (no markdown, no code blocks):
 {{"text": "Your question here", "difficulty": "easy|medium|hard", "category": "Category name"}}"""
 
     try:
