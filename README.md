@@ -8,8 +8,8 @@ InterviewGuard AI Simulator is a technical interview practice platform. It simul
 
 # Live Deployments:
 
-• Frontend Application: https://interviewguard-ai-simulator.netlify.app/
-• Backend Server (API): https://interviewguard-ai-simulator.onrender.com
+* Frontend Application: https://interviewguard-ai-simulator.netlify.app
+* Backend Server (API): https://interviewguard-ai-simulator.onrender.com
 
 ---
 
