@@ -1,24 +1,44 @@
 """
-Gemini 2.0 Flash Service Layer — Question generation, answer evaluation, and 3-topic roadmap.
+Gemini 2.0 Flash Service Layer — Question generation, answer evaluation.
+Uses the new google-genai SDK which supports AQ. format API keys.
 """
 import json
 import logging
 from django.conf import settings
 
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 
 logger = logging.getLogger(__name__)
 
-api_key = settings.GEMINI_API_KEY
-genai.configure(api_key=api_key)
+
+def _get_client():
+    return genai.Client(api_key=settings.GEMINI_API_KEY)
 
 
-def _get_model():
-    return genai.GenerativeModel('gemini-2.0-flash-lite')
+def _generate(prompt: str) -> str:
+    client = _get_client()
+    response = client.models.generate_content(
+        model='gemini-2.0-flash-lite',
+        contents=prompt,
+        config=types.GenerateContentConfig(
+            temperature=0.7,
+            max_output_tokens=512,
+        ),
+    )
+    return response.text.strip()
+
+
+def _parse_json(text: str) -> dict:
+    if text.startswith('```'):
+        text = text.split('\n', 1)[1]
+    if text.endswith('```'):
+        text = text.rsplit('```', 1)[0]
+    return json.loads(text.strip())
 
 
 def generate_question(role, experience, tech_stack, previous_questions=None, question_number=1, total_questions=5):
-    """Generate a role-aware interview question using Gemini 2.0 Flash."""
+    """Generate a role-aware interview question using Gemini."""
     previous_q_text = ""
     if previous_questions:
         previous_q_text = "\n".join([f"- {q}" for q in previous_questions])
@@ -55,17 +75,8 @@ Respond ONLY in this exact JSON format (no markdown, no code blocks):
 {{"text": "Your question here", "difficulty": "easy|medium|hard", "category": "Category name"}}"""
 
     try:
-        model = _get_model()
-        response = model.generate_content(prompt)
-        text = response.text.strip()
-
-        if text.startswith('```'):
-            text = text.split('\n', 1)[1]
-        if text.endswith('```'):
-            text = text.rsplit('```', 1)[0]
-        text = text.strip()
-
-        result = json.loads(text)
+        text = _generate(prompt)
+        result = _parse_json(text)
         return {
             'text': result.get('text', 'Tell me about your experience.'),
             'difficulty': result.get('difficulty', 'medium'),
@@ -83,7 +94,7 @@ Respond ONLY in this exact JSON format (no markdown, no code blocks):
 
 
 def evaluate_answer(question_text, answer_text, role, experience):
-    """Evaluate a candidate's answer using Gemini 2.0 Flash."""
+    """Evaluate a candidate's answer using Gemini."""
     prompt = f"""You are an expert technical interviewer evaluating a candidate's spoken answer.
 
 Role: {role}
@@ -108,20 +119,10 @@ Respond ONLY in this JSON format (no markdown, no code blocks):
 Score must be a number from 1.0 to 10.0."""
 
     try:
-        model = _get_model()
-        response = model.generate_content(prompt)
-        text = response.text.strip()
-
-        if text.startswith('```'):
-            text = text.split('\n', 1)[1]
-        if text.endswith('```'):
-            text = text.rsplit('```', 1)[0]
-        text = text.strip()
-
-        result = json.loads(text)
+        text = _generate(prompt)
+        result = _parse_json(text)
         score = float(result.get('score', 5.0))
         score = max(1.0, min(10.0, score))
-
         return {
             'score': score,
             'feedback': result.get('feedback', 'No feedback available.'),
@@ -129,7 +130,7 @@ Score must be a number from 1.0 to 10.0."""
             'improvements': result.get('improvements', []),
         }
     except Exception as e:
-        logger.error(f"Gemini answer evaluation error: {e}")
+        logger.error(f"Gemini answer evaluation error: {type(e).__name__}: {e}")
         return {
             'score': 5.0,
             'feedback': 'Unable to evaluate answer at this time.',
@@ -169,19 +170,10 @@ Respond ONLY in this JSON format (no markdown, no code blocks):
 }}"""
 
     try:
-        model = _get_model()
-        response = model.generate_content(prompt)
-        text = response.text.strip()
-
-        if text.startswith('```'):
-            text = text.split('\n', 1)[1]
-        if text.endswith('```'):
-            text = text.rsplit('```', 1)[0]
-        text = text.strip()
-
-        return json.loads(text)
+        text = _generate(prompt)
+        return _parse_json(text)
     except Exception as e:
-        logger.error(f"Gemini roadmap generation error: {e}")
+        logger.error(f"Gemini roadmap generation error: {type(e).__name__}: {e}")
         return {
             'title': 'Study Roadmap',
             'summary': 'Focus on strengthening your core skills.',
