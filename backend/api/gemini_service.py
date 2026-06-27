@@ -24,25 +24,32 @@ def generate_question(role, experience, tech_stack, previous_questions=None, que
         previous_q_text = "\n".join([f"- {q}" for q in previous_questions])
         previous_q_text = f"\n\nPreviously asked questions (DO NOT repeat these):\n{previous_q_text}"
 
+    has_skills = bool(tech_stack)
+    skills_line = f"- Core Technologies / Skills: {', '.join(tech_stack)}" if has_skills else "- Core Technologies / Skills: Not specified"
+    skills_instruction = (
+        "2. Tie the question to one of the listed core technologies/skills where natural."
+        if has_skills else
+        "2. Since no specific skills are listed, focus entirely on the responsibilities, challenges, and mindset of the role."
+    )
+
     prompt = f"""You are an expert technical interviewer conducting a mock interview.
 
 Candidate Profile:
 - Target Role: {role}
 - Experience Level: {experience}
-- Core Technologies / Skills: {', '.join(tech_stack) if tech_stack else 'General'}
+{skills_line}
 - Question: {question_number} of {total_questions}
 {previous_q_text}
 
-Your goal is to generate ONE question that is DEEPLY relevant to BOTH the target role AND the candidate's skills.
+Your goal is to generate ONE question that is DEEPLY relevant to the target role.
 
 Guidelines:
 1. The question MUST relate to the "{role}" role — think about what this role actually does day-to-day.
-2. Tie the question to one of the listed core technologies/skills where natural.
+{skills_instruction}
 3. Match difficulty to experience: Junior → concepts, Mid → application, Senior → trade-offs/scale, Lead → strategy/architecture.
-4. For odd-numbered questions, focus more on role responsibilities. For even-numbered questions, focus more on a specific skill.
-5. Gradually increase difficulty as question number increases.
-6. Make it conversational — the question will be spoken aloud in a real voice interview.
-7. Ask only ONE focused question — not multi-part.
+4. Gradually increase difficulty as question number increases.
+5. Make it conversational — the question will be spoken aloud in a real voice interview.
+6. Ask only ONE focused question — not multi-part.
 
 Respond ONLY in this exact JSON format (no markdown, no code blocks):
 {{"text": "Your question here", "difficulty": "easy|medium|hard", "category": "Category name"}}"""
