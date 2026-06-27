@@ -83,9 +83,7 @@ export default function LandingPage() {
             <h2 className="text-3xl font-bold tracking-tight text-stone-900">
               Why Practice with InterviewGuard AI Simulator?
             </h2>
-            <p className="text-stone-500 mt-3 leading-relaxed text-sm">
-              Equipped with computer vision and LLM intelligence to replicate real high-stakes environments.
-            </p>
+
           </div>
 
           <motion.div
@@ -112,7 +110,10 @@ export default function LandingPage() {
                 title: 'Immediate AI Feedback',
                 desc: 'Instantly get scoring, specific strengths list, and actionable recommendations right after each question.',
               },
-
+              {
+                title: 'Comprehensive Reports',
+                desc: 'Review your past interviews with detailed metrics, transcripts, and AI-driven insights to track improvement.',
+              },
               {
                 title: '100% Client-Side Privacy',
                 desc: 'Computer vision face tracking runs inside your local browser tab. No camera video is ever uploaded.',
